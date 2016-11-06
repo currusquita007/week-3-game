@@ -1,137 +1,104 @@
 
 
+    var reminderGuesses = 12;
+    var letterAlreadyUsed =[];
+    //this is a counter that keeps adding points as the user guess correctly
+    var Wins = 0 ;
+    //Define when the game is over
+    var done = false ;
+    //ask user to chose another key
+    var again = true ;
 
-//-------------------------------------------------------------------------------//
-//Define reminderGuesses, letterAlreadyUsed variables
-//User has 12 attemps to guess the word, let's define set a limit on the number of trials
+    // The current word is generated from a list 
+    var possibleWords = ['madona', 'kesha', 'Taylor', 'Brithney'];
 
-//Display remiderGuesses and letterAlreadyUsed in the html. 
+    // Make a for loop through the possibleWords array and define that as the chosenWord
+    var chosenWord = possibleWords[Math.floor(Math.random()*possibleWords.length)];
 
-// When user click a letter of the keyword, store that value in a variables
+    console.log(chosenWord);
 
+    //Determine the lenght of the chosen word and display this as dash lines in the html
+    var lengthWord = chosenWord.length;
 
-//Keep track of the number of clicks
-//discount the guesses from the reminderGuesses value
+    //Define a new variable with the same amount of letters as the guessWord with dashes instead of letters
+    var disGuessWord = new Array(lengthWord).fill("-");
+    //Split the w
+    var nletter = [];
 
+    for (var i = 0; i < lengthWord; i++) {
+    nletter.push(chosenWord.charAt(i));
 
-// Compare the user guess with any of the letters in the currentWord
-
-//add point in Wins if it is match
-
-//Compare key with letterAlreadyUsed
-
-//If user click twice the same key, don't remove points from the reminderGuesses and don't add 
-//new words into the letterAlreadyUsed
-
-
-
-var reminderGuesses = 12;
-var letterAlreadyUsed =[];
-//this is a counter that keeps adding points as the user guess correctly
-var Wins = 0 ;
-
-
-
-// The current word is generated from a list or randomly? let's start with a words 
-//define by me, then make it fancier
-
-var possibleWords = ['madona', 'kesha', 'Taylor', 'Brithney'];
+    };
 
 
-// Make a for loop through the possibleWords array and define that as the chosenWord
+    //User press a key
+   document.addEventListener('keyup', function(event){
 
-var chosenWord = possibleWords[Math.floor(Math.random()*possibleWords.length)];
+   var keyPress = event.keyCode;
 
-console.log(chosenWord);
+    
+    //unless the key is a letter, the code will not run
+    if(!(keyPress >= 65 && keyPress <= 120) && (keyPress != 32 && keyPress != 0)) { 
+                event.preventDefault(); 
+                alert("Press an letter key");
+                
+    }
 
-//Determine the lenght of the chosen word and display this as dash lines in the html
+    else {
 
-var lengthWord = chosenWord.length;
+      var userGuess = String.fromCharCode(keyPress).toLowerCase(); 
+      console.log(userGuess);
+            // allow letters and whitespaces only.
+      letterAlreadyUsed.push(userGuess)  ;
 
- 
+      //If the userGuess key is within the array of characters of the chosenWord, add a winning point
+      var indx = nletter.indexOf(userGuess);
+           //if the letter matches one of the letter in the word chosen reandomly, indx is positive
+            if (indx > 0){
+              //add a point in winning
+              Wins ++ ;
 
-document.addEventListener('keyup', function(event){
+              //check which position in the disGuessWord the letter matches
 
-var keyPress = event.keyCode;
+              for (var i = 0; i < lengthWord; i++) {
+              
+              var indxLett = chosenWord.indexOf([i],userGuess);
 
-//unless is a letter, the code will not run
+              
 
-if(!(keyPress >= 65 && keyPress <= 120) && (keyPress != 32 && keyPress != 0)) { 
-            event.preventDefault(); 
-            alert("Press an letter key");
+              //If there is a match, replace the dash with the index of the userGuess that matches a letter in the random word chosen
+              //the computer
 
+              if (indxLett > 0){
 
-}
+              disGuessWord.replace(indxLett,userGuess);
+              }
 
-else {
-
-
-  
-var userGuess = String.fromCharCode(keyPress).toLowerCase(); 
-        // allow letters and whitespaces only.
-
-
-letterAlreadyUsed.push(userGuess)  ;
-
-//Split the chosenWord into characters
-
-var nletter = [];
-
-for (var i = 0; i < lengthWord; i++) {
-
-   
-   nletter.push(chosenWord.charAt(i));
-
-    // var nletter = chosenWord.charAt(i);
-
-        // if (nletter == userGuess) {
-        //     Wins ++;
-        //     }
-
-  }
-
-//If the userGuess key is within the array of characters of the chosenWord, add a winning point
-var indx = nletter.indexOf(userGuess);
-
-if (indx > 1){
-  Wins ++ ;
-}
-
-//if the userGuess key is not within the array of characters, remove one point from reminderGuesses
-else {
-  reminderGuesses --;
-}
+              }
+              //display that in html
 
 
+            
+            }
 
+          //if the userGuess key is not within the array of characters, remove one point from reminderGuesses
+            else {
+                  reminderGuesses --;
 
+                //if the number of guess words is zero, stop the game
 
+                  if (reminderGuesses == 0) {
+                    alert("You loose!")
+                    return;
+                  }
 
-console.log(lengthWord);
-console.log(userGuess);
+            }
 
+            //placing the html inot the game ID
+            document.getElementById('wins').innerHTML = Wins;
+            document.getElementById('letter').innerHTML = disGuessWord;
+            document.getElementById('guessRmd').innerHTML = reminderGuesses;
+            document.getElementById('letGuess').innerHTML = letterAlreadyUsed;
 
-  // Taking the tallies and displaying then in HTML
-
-  var html = '<p> Press any key to get started </p>' +
-  "<p> Wins: " +
-  Wins + 
-  "<p> lengthWord: " +
-  lengthWord + 
-  "</p>" +
-   "<p> Number of guesses reminder: " +
-  reminderGuesses + 
-  "</p>" +
-  "<p> Letters already chosen: " +
-  letterAlreadyUsed + 
-  "</p>" ;
-
-  //placing the html inot the game ID
-  document.getElementById('game').innerHTML = html;
-
-
-
-
-  }
-}
-);
+     };
+})
